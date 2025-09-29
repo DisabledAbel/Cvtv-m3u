@@ -41,20 +41,20 @@ jobs:
           echo "=== known_channels.json ==="
           cat known_channels.json || true
 
-      - name: Commit changes if any
+      - name: Configure git user
+        run: git config user.name "github-actions[bot]"
+
+      - name: Configure git email
+        run: git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit playlist changes if any
         run: |
           set -e
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # check if any of the target files changed
+          # check if any target files changed
           if git status --porcelain | grep -qE "playlist\.m3u8|known_channels\.json|new_channels\.txt"; then
             git add playlist.m3u8 known_channels.json new_channels.txt
-
-            # commit with date in YYYY-MM-DD format
             COMMIT_MSG="Auto-update: discovered channels on $(date -u +'%Y-%m-%d')"
             git commit -m "$COMMIT_MSG" || echo "No changes to commit"
-
             git push
           else
             echo "No changes to commit."
