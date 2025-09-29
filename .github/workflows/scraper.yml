@@ -2,7 +2,7 @@ name: CVTV Daily Discovery
 
 on:
   schedule:
-    - cron: "0 0 * * *"   # daily at 00:00 UTC
+    - cron: "0 0 * * *"  # daily at 00:00 UTC
   workflow_dispatch:      # manual trigger option
 
 permissions:
@@ -13,26 +13,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: pip install requests m3u8
 
-      - name: Run scraper
+      - name: Run CVTV scraper
+        run: python scrape.py
         env:
           CVTV_COOKIE: ${{ secrets.CVTV_COOKIE }}
           CVTV_UA: ${{ secrets.CVTV_UA }}
-        run: python scrape.py
 
-      - name: Show artifacts (debug)
+      - name: Show debug artifacts
         run: |
           echo "=== playlist.m3u8 ==="
           cat playlist.m3u8 || true
@@ -47,10 +47,10 @@ jobs:
       - name: Configure git email
         run: git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit playlist changes if any
+      - name: Commit changes if any
         run: |
           set -e
-          # check if any target files changed
+          # Only commit if files changed
           if git status --porcelain | grep -qE "playlist\.m3u8|known_channels\.json|new_channels\.txt"; then
             git add playlist.m3u8 known_channels.json new_channels.txt
             COMMIT_MSG="Auto-update: discovered channels on $(date -u +'%Y-%m-%d')"
