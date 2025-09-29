@@ -1,0 +1,49 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="KMBCABC" group-title="CVTV",KMBCABC
+https://cvtv.cvalley.net/hls/KMBCABC/KMBCABC.m3u8
+#EXTINF:-1 tvg-id="KCTV5" group-title="CVTV",KCTV5
+https://cvtv.cvalley.net/hls/KCTV5/KCTV5.m3u8
+#EXTINF:-1 tvg-id="KSHBD" group-title="CVTV",KSHBD
+https://cvtv.cvalley.net/hls/KSHBD/KSHBD.m3u8
+#EXTINF:-1 tvg-id="KSHB41" group-title="CVTV",KSHB41
+https://cvtv.cvalley.net/hls/KSHB41/KSHB41.m3u8
+#EXTINF:-1 tvg-id="WDAF" group-title="CVTV",WDAF
+https://cvtv.cvalley.net/hls/WDAF/WDAF.m3u8
+#EXTINF:-1 tvg-id="KCPT" group-title="CVTV",KCPT
+https://cvtv.cvalley.net/hls/KCPT/KCPT.m3u8
+#EXTINF:-1 tvg-id="ESPN" group-title="CVTV",ESPN
+https://cvtv.cvalley.net/hls/ESPN/ESPN.m3u8
+#EXTINF:-1 tvg-id="ESPN2" group-title="CVTV",ESPN2
+https://cvtv.cvalley.net/hls/ESPN2/ESPN2.m3u8
+#EXTINF:-1 tvg-id="ESPNU" group-title="CVTV",ESPNU
+https://cvtv.cvalley.net/hls/ESPNU/ESPNU.m3u8
+#EXTINF:-1 tvg-id="ESPNEWS" group-title="CVTV",ESPNEWS
+https://cvtv.cvalley.net/hls/ESPNEWS/ESPNEWS.m3u8
+#EXTINF:-1 tvg-id="ESPNDEPORTES" group-title="CVTV",ESPNDEPORTES
+https://cvtv.cvalley.net/hls/ESPNDEPORTES/ESPNDEPORTES.m3u8
+#EXTINF:-1 tvg-id="FOXSPORTS1" group-title="CVTV",FOXSPORTS1
+https://cvtv.cvalley.net/hls/FOXSPORTS1/FOXSPORTS1.m3u8
+#EXTINF:-1 tvg-id="FOXSPORTS2" group-title="CVTV",FOXSPORTS2
+https://cvtv.cvalley.net/hls/FOXSPORTS2/FOXSPORTS2.m3u8
+#EXTINF:-1 tvg-id="NFLNETWORK" group-title="CVTV",NFLNETWORK
+https://cvtv.cvalley.net/hls/NFLNETWORK/NFLNETWORK.m3u8
+#EXTINF:-1 tvg-id="NBATV" group-title="CVTV",NBATV
+https://cvtv.cvalley.net/hls/NBATV/NBATV.m3u8
+#EXTINF:-1 tvg-id="MLBNETWORK" group-title="CVTV",MLBNETWORK
+https://cvtv.cvalley.net/hls/MLBNETWORK/MLBNETWORK.m3u8
+#EXTINF:-1 tvg-id="NHLNETWORK" group-title="CVTV",NHLNETWORK
+https://cvtv.cvalley.net/hls/NHLNETWORK/NHLNETWORK.m3u8
+#EXTINF:-1 tvg-id="TNT" group-title="CVTV",TNT
+https://cvtv.cvalley.net/hls/TNT/TNT.m3u8
+#EXTINF:-1 tvg-id="TBS" group-title="CVTV",TBS
+https://cvtv.cvalley.net/hls/TBS/TBS.m3u8
+#EXTINF:-1 tvg-id="USA" group-title="CVTV",USA
+https://cvtv.cvalley.net/hls/USA/USA.m3u8
+#EXTINF:-1 tvg-id="CNN" group-title="CVTV",CNN
+https://cvtv.cvalley.net/hls/CNN/CNN.m3u8
+#EXTINF:-1 tvg-id="MSNBC" group-title="CVTV",MSNBC
+https://cvtv.cvalley.net/hls/MSNBC/MSNBC.m3u8
+#EXTINF:-1 tvg-id="CNBC" group-title="CVTV",CNBC
+https://cvtv.cvalley.net/hls/CNBC/CNBC.m3u8
+#EXTINF:-1 tvg-id="FOXNEWS" group-title="CVTV",FOXNEWS
+https://cvtv.cvalley.net/hls/FOXNEWS/FOXNEWS.m3u8
