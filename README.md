@@ -31,16 +31,12 @@ playlist.m3u8 must stay in the repo root for the raw URL to work
 The URL never changes
 New channels are discovered automatically
 Disclaimer:
-For personal and educational use only
-All streams belong to CVTV
-No commercial use or redistribution
-Comply with all applicable laws
-Legal Notice:
-Personal, educational, non-commercial use only
-Violating copyright, Oregon (ORS 164.377), or Missouri (RSMo §569.095) laws is prohibited
-No liability for misuse
-
-—-
+***Disclaimer:***
+- CVTV provides public M3U playlists; this repository uses only publicly available streams.
+- All content belongs to CVTV.
+- Intended for personal and educational use only.
+- Redistribution for commercial purposes is prohibited.
+- The author is not responsible for misuse.***
 
 Community:
 Discord: https://discord.gg/jx6ZHSuK56
