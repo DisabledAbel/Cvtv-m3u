@@ -39,5 +39,8 @@ Legal Notice:
 Personal, educational, non-commercial use only
 Violating copyright, Oregon (ORS 164.377), or Missouri (RSMo §569.095) laws is prohibited
 No liability for misuse
+
+—-
+
 Community:
 Discord: https://discord.gg/jx6ZHSuK56
