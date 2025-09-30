@@ -1,12 +1,14 @@
-name: CVTV Daily Discovery
+name: CVTV Scraper + Pages
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # every day at 00:00 UTC
-  workflow_dispatch:      # allow manual run
+    - cron: "0 */6 * * *"   # run every 6 hours
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   scrape:
@@ -33,12 +35,29 @@ jobs:
           set -e
           python scrape.py
 
-      - name: Commit and push if changes
+      - name: Commit updated playlist
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlist.m3u8 known_channels.json new_channels.txt
           if ! git diff --cached --quiet; then
-            git commit -m "Auto-update: discovered channels on $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            git commit -m "Auto-update playlist on $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
             git push
           fi
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: scrape
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
