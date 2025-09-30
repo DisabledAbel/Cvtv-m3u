@@ -1,0 +1,28 @@
+name: Update Missouri IPTV Playlist
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Generate Missouri M3U
+        run: |
+          mkdir -p playlists
+          curl -s "https://iptv-org.github.io/iptv/countries/us.m3u" \
+          | awk '/#EXTINF/ {p=$0} /,/{if(p ~ /broadcast_area="US-MO"/){print p;getline;print}}' \
+          > playlists/missouri.m3u8
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add playlists/missouri.m3u8
+          git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || echo "No changes"
+          git push
