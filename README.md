@@ -26,7 +26,7 @@ Use this link in VLC, IPTV apps, or any HLS-compatible player:
 ~~
 
 
-Notes:
+### Notes:
 playlist.m3u8 must stay in the repo root for the raw URL to work
 The URL never changes
 New channels are discovered automatically
