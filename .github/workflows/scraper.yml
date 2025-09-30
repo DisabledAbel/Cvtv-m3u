@@ -2,14 +2,14 @@ name: CVTV Daily Discovery
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # daily at 00:00 UTC
-  workflow_dispatch:      # manual trigger option
+    - cron: "0 0 * * *"  # every day at 00:00 UTC
+  workflow_dispatch:      # allow manual run
 
 permissions:
   contents: write
 
 jobs:
-  discover:
+  scrape:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,43 +18,27 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Set up Python 3.11
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.x'
 
-      - name: Install Python dependencies
-        run: pip install requests m3u8
-
-      - name: Run CVTV scraper
-        run: python scrape.py
-        env:
-          CVTV_COOKIE: ${{ secrets.CVTV_COOKIE }}
-          CVTV_UA: ${{ secrets.CVTV_UA }}
-
-      - name: Show debug artifacts
+      - name: Install dependencies
         run: |
-          echo "=== playlist.m3u8 ==="
-          cat playlist.m3u8 || true
-          echo "=== new_channels.txt ==="
-          cat new_channels.txt || true
-          echo "=== known_channels.json ==="
-          cat known_channels.json || true
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Configure git user
-        run: git config user.name "github-actions[bot]"
-
-      - name: Configure git email
-        run: git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit changes if any
+      - name: Run scraper
         run: |
           set -e
-          # Only commit if files changed
-          if git status --porcelain | grep -qE "playlist\.m3u8|known_channels\.json|new_channels\.txt"; then
-            git add playlist.m3u8 known_channels.json new_channels.txt
-            COMMIT_MSG="Auto-update: discovered channels on $(date -u +'%Y-%m-%d')"
-            git commit -m "$COMMIT_MSG" || echo "No changes to commit"
+          python scrape.py
+
+      - name: Commit and push if changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add playlist.m3u8 known_channels.json new_channels.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update: discovered channels on $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
             git push
-          else
-            echo "No changes to commit."
+          fi
