@@ -1,5 +1,6 @@
 name: Update Missouri IPTV Playlist
 
+# Run every 12 hours and allow manual trigger
 on:
   schedule:
     - cron: "0 */12 * * *"
@@ -12,7 +13,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -20,21 +21,25 @@ jobs:
         with:
           node-version: 20
 
+      - name: Ensure playlists folder exists
+        run: mkdir -p playlists
+
       - name: Install dependencies
-        run: npm install node-fetch@3
+        run: npm ci
 
-      - name: Build playlist
-        run: node build-cvtv-playlist.js
+      - name: Generate Missouri playlist
+        run: |
+          set -e
+          node build-missouri-playlist.js > playlists/missouri.m3u8
 
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlists/missouri.m3u8
-          if ! git diff --cached --quiet; then
-            git commit -m "Auto-update Missouri IPTV playlist [skip ci]"
-            git pull --rebase origin main || true
-            git push origin main
-          else
-            echo "No changes detected"
-          fi
+          git diff --cached --quiet || git commit -m "Auto-update Missouri IPTV playlist [skip ci]"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
