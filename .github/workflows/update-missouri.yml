@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -22,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm install node-fetch@3
 
-      - name: Build playlist from GitHub issue
+      - name: Build playlist
         run: node build-cvtv-playlist.js
 
       - name: Commit and push changes
@@ -31,9 +32,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlists/missouri.m3u8
 
+          # Only commit if changes exist
           if ! git diff --cached --quiet; then
             git commit -m "Auto-update Missouri IPTV playlist [skip ci]"
-            # Retry push up to 3 times if remote has new commits
+            # Retry push up to 3 times if rejected
             for i in {1..3}; do
               git push origin main && break
               echo "Push rejected, pulling remote and retrying..."
