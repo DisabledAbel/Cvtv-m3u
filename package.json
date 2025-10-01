@@ -1,0 +1,8 @@
+{
+  "name": "cvtv-m3u",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build:missouri": "node build-missouri-playlist.js"
+  }
+}
