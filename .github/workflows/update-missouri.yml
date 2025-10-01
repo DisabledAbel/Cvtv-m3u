@@ -2,61 +2,74 @@ name: Update Missouri IPTV Playlist
 
 on:
   schedule:
-    - cron: "0 */12 * * *"   # runs every 12 hours
+    - cron: "0 */12 * * *" # every 12 hours
   workflow_dispatch:
 
 jobs:
-  update-missouri:
+  update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Generate Missouri M3U
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install node-fetch@3
+
+      - name: Build playlist from GitHub issue
         run: |
-          mkdir -p playlists
-          cat > playlists/missouri.m3u8 <<'EOF'
-          #EXTM3U
-          #EXTINF:-1 tvg-id="KOMU-CW.us" tvg-name="KOMU CW" group-title="Missouri",KOMU CW
-          https://cvtv.cvalley.net:8088/hls/komucw.m3u8
-          #EXTINF:-1 tvg-id="KCTV-CBS.us" tvg-name="KCTV CBS" group-title="Missouri",KCTV CBS
-          https://cvtv.cvalley.net:8088/hls/kctvcbs.m3u8
-          #EXTINF:-1 tvg-id="KMIZ-ABC.us" tvg-name="KMIZ ABC" group-title="Missouri",KMIZ ABC
-          https://cvtv.cvalley.net:8088/hls/kmizabc.m3u8
-          #EXTINF:-1 tvg-id="KQFX-FOX.us" tvg-name="KQFX FOX" group-title="Missouri",KQFX FOX
-          https://cvtv.cvalley.net:8088/hls/kqfxfox.m3u8
-          #EXTINF:-1 tvg-id="KOMU-NBC.us" tvg-name="KOMU NBC" group-title="Missouri",KOMU NBC
-          https://cvtv.cvalley.net:8088/hls/komunbc.m3u8
-          #EXTINF:-1 tvg-id="KRCG-CBS.us" tvg-name="KRCG CBS" group-title="Missouri",KRCG CBS
-          https://cvtv.cvalley.net:8088/hls/krcgcbs.m3u8
-          #EXTINF:-1 tvg-id="KZOU-MyTV.us" tvg-name="KZOU MyTV" group-title="Missouri",KZOU MyTV
-          https://cvtv.cvalley.net:8088/hls/kzoumytv.m3u8
-          #EXTINF:-1 tvg-id="KOMU-Weather.us" tvg-name="KOMU Weather" group-title="Missouri",KOMU Weather
-          https://cvtv.cvalley.net:8088/hls/komuweather.m3u8
-          #EXTINF:-1 tvg-id="KMIZ-FOX.us" tvg-name="KMIZ FOX 22" group-title="Missouri",KMIZ FOX 22
-          https://cvtv.cvalley.net:8088/hls/kmizfox.m3u8
-          #EXTINF:-1 tvg-id="KMIZ-MeTV.us" tvg-name="KMIZ MeTV" group-title="Missouri",KMIZ MeTV
-          https://cvtv.cvalley.net:8088/hls/kmizmetv.m3u8
-          #EXTINF:-1 tvg-id="KMIZ-MNT.us" tvg-name="KMIZ MNT" group-title="Missouri",KMIZ MNT
-          https://cvtv.cvalley.net:8088/hls/kmizmnt.m3u8
-          #EXTINF:-1 tvg-id="KRCG-MyTV.us" tvg-name="KRCG MyTV" group-title="Missouri",KRCG MyTV
-          https://cvtv.cvalley.net:8088/hls/krcgmytv.m3u8
-          #EXTINF:-1 tvg-id="KRCG-CW.us" tvg-name="KRCG CW" group-title="Missouri",KRCG CW
-          https://cvtv.cvalley.net:8088/hls/krcgcw.m3u8
-          #EXTINF:-1 tvg-id="KMIZ-Ion.us" tvg-name="KMIZ ION" group-title="Missouri",KMIZ ION
-          https://cvtv.cvalley.net:8088/hls/kmizion.m3u8
-          #EXTINF:-1 tvg-id="KOMU-NBC-8.3.us" tvg-name="KOMU NBC 8.3" group-title="Missouri",KOMU NBC 8.3
-          https://cvtv.cvalley.net:8088/hls/komu83.m3u8
-          #EXTINF:-1 tvg-id="KOMU-NBC-8.4.us" tvg-name="KOMU NBC 8.4" group-title="Missouri",KOMU NBC 8.4
-          https://cvtv.cvalley.net:8088/hls/komu84.m3u8
-          #EXTINF:-1 tvg-id="KOMU-NBC-8.5.us" tvg-name="KOMU NBC 8.5" group-title="Missouri",KOMU NBC 8.5
-          https://cvtv.cvalley.net:8088/hls/komu85.m3u8
+          node <<'EOF'
+          import fs from "fs";
+          import fetch from "node-fetch";
+
+          const issueUrl = "https://api.github.com/repos/DisabledAbel/Cvtv-m3u/issues/1";
+          const res = await fetch(issueUrl, { headers: { "Accept": "application/vnd.github.v3+json" } });
+          const data = await res.json();
+          const body = data.body || "";
+
+          const lines = body.split("\n");
+          const channels = [];
+          let lastName = "";
+
+          for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            if (line.startsWith("http")) {
+              channels.push({ name: lastName || "Unknown", url: line });
+            } else if (!line.startsWith("#")) {
+              lastName = line;
+            }
+          }
+
+          let output = "#EXTM3U\n\n";
+          for (const ch of channels) {
+            output += `#EXTINF:-1 group-title="Missouri",${ch.name}\n${ch.url}\n\n`;
+          }
+
+          fs.mkdirSync("playlists", { recursive: true });
+          fs.writeFileSync("playlists/missouri.m3u8", output);
+          console.log("✅ Playlist built successfully!");
           EOF
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add playlists/missouri.m3u8
-          git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || echo "No changes to commit"
-          git push
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update Missouri IPTV playlist [skip ci]"
+            # Retry push up to 3 times if remote has new commits
+            for i in {1..3}; do
+              git push origin main && break
+              echo "Push rejected, pulling remote and retrying..."
+              git pull --rebase origin main
+            done
+          else
+            echo "No changes detected, skipping commit."
