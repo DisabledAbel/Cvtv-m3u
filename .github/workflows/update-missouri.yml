@@ -2,7 +2,7 @@ name: Update Missouri IPTV Playlist
 
 on:
   schedule:
-    - cron: "0 */12 * * *"  # every 12 hours
+    - cron: "0 */12 * * *" # every 12 hours
   workflow_dispatch:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -23,17 +23,26 @@ jobs:
       - name: Ensure playlists folder exists
         run: mkdir -p playlists
 
-      - name: Install dependencies
+      - name: Cache URL validation
+        uses: actions/cache@v3
+        id: url-cache
+        with:
+          path: playlists/.url_cache.json
+          key: url-cache-${{ runner.os }}-${{ hashFiles('build-cvtv-playlist.js') }}
+          restore-keys: |
+            url-cache-${{ runner.os }}-
+
+      - name: Install dependencies (if any)
         run: npm ci || true
 
       - name: Generate Missouri playlist
-        run: node build-missouri-playlist.js
+        run: node build-cvtv-playlist.js
 
-      - name: Commit changes
+      - name: Commit changes if playlist updated
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add playlists/missouri.m3u8
+          git add playlists/missouri.m3u8 playlists/.url_cache.json
           git diff --cached --quiet || git commit -m "Auto-update Missouri IPTV playlist [skip ci]"
 
       - name: Push changes
