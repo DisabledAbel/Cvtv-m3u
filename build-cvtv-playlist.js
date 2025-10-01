@@ -2,10 +2,8 @@
 /**
  * build-missouri-playlist.js
  *
- * Generates playlists/missouri.m3u8 from an internal channel list.
- * Validates each URL (requests first bytes) and comments out failing entries.
- *
- * Node 20+ (global fetch) required.
+ * Generates playlists/missouri.m3u8 with automatic URL validation.
+ * Node 20+ required.
  */
 
 import fs from "fs/promises";
@@ -14,10 +12,8 @@ import path from "path";
 const OUT_DIR = path.resolve("playlists");
 const OUT_FILE = path.join(OUT_DIR, "missouri.m3u8");
 const TMP_FILE = OUT_FILE + ".tmp";
-const CONCURRENCY = 6;
-const FETCH_TIMEOUT_MS = 10_000; // 10s
+const FETCH_TIMEOUT_MS = 10000; // 10s
 
-// === channel list (from your provided playlist) ===
 const channels = [
   { name: "KOMU CW", url: "https://cvtv.cvalley.net/hls/KOMUCW/KOMUCW.m3u8", group: "Local" },
   { name: "KCTV CBS", url: "https://cvtv.cvalley.net/hls/KCTVCBS/KCTVCBS.m3u8", group: "Local" },
@@ -54,112 +50,48 @@ const channels = [
   { name: "WDAF Antenna", url: "https://cvtv.cvalley.net/hls/WDAFAntenna/WDAFAntenna.m3u8", group: "Subchannel" }
 ];
 
-// === helpers ===
 function sanitizeTvgId(name) {
   return name.toLowerCase().replace(/\s+/g, "_").replace(/[^\w-_.]/g, "");
 }
 
-function timeoutPromise(ms, msg) {
-  return new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms));
-}
-
-async function fetchHeadSample(url) {
-  const controller = new AbortController();
-  const signal = controller.signal;
-  // race with timeout
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+// Minimal fetch to check if URL is reachable
+async function checkUrl(url) {
   try {
-    // request a tiny byte range if server supports it
-    const res = await fetch(url, {
-      method: "GET",
-      redirect: "follow",
-      headers: { Range: "bytes=0-1023", "User-Agent": "missouri-playlist-updater/1.0" },
-      signal
-    });
-    clearTimeout(timer);
-    return res;
-  } catch (err) {
-    clearTimeout(timer);
-    throw err;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const res = await fetch(url, { method: "GET", headers: { Range: "bytes=0-1023" }, signal: controller.signal });
+    clearTimeout(timeout);
+    return res.ok;
+  } catch {
+    return false;
   }
 }
 
-/**
- * Limited concurrency map
- */
-async function mapLimit(array, limit, iteratorFn) {
-  const results = new Array(array.length);
-  let idx = 0;
-  const workers = new Array(Math.min(limit, array.length)).fill(null).map(async () => {
-    while (true) {
-      const i = idx++;
-      if (i >= array.length) return;
-      results[i] = await iteratorFn(array[i], i);
-    }
-  });
-  await Promise.all(workers);
-  return results;
-}
-
-// === main ===
 async function main() {
   await fs.mkdir(OUT_DIR, { recursive: true });
 
-  console.log(`Validating ${channels.length} channels (concurrency=${CONCURRENCY})...`);
+  let content = "#EXTM3U\n";
+  content += `# Generated: ${new Date().toISOString()}\n\n`;
 
-  const results = await mapLimit(channels, CONCURRENCY, async (ch) => {
-    try {
-      const res = await fetchHeadSample(ch.url);
-      if (!res.ok) throw new Error(`http ${res.status}`);
-      const ct = res.headers.get("content-type") || "";
-      // good if content-type looks like HLS or URL ends with .m3u8
-      const ok = ct.includes("mpegurl") || ct.includes("vnd.apple.mpegurl") || ct.includes("application/vnd.apple.mpegurl") || ch.url.toLowerCase().endsWith(".m3u8") || res.headers.get("content-length") !== null;
-      return { ok, status: res.status, contentType: ct, name: ch.name, url: ch.url, group: ch.group || "Local" };
-    } catch (err) {
-      return { ok: false, error: err.message || String(err), name: ch.name, url: ch.url, group: ch.group || "Local" };
-    }
-  });
-
-  // build output
-  const header = [
-    "#EXTM3U",
-    `# Generated: ${new Date().toISOString()}`,
-    "# Source: DisabledAbel/Cvtv-m3u",
-    ""
-  ].join("\n");
-
-  const okLines = [];
-  const failedLines = [];
-
-  for (const r of results) {
-    const tvgId = sanitizeTvgId(r.name);
-    if (r.ok) {
-      okLines.push(`#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${r.name}" group-title="${r.group}",${r.name}`);
-      okLines.push(r.url);
-      okLines.push("");
+  for (const ch of channels) {
+    const ok = await checkUrl(ch.url);
+    const tvgId = sanitizeTvgId(ch.name);
+    if (ok) {
+      content += `#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${ch.name}" group-title="${ch.group}",${ch.name}\n`;
+      content += `${ch.url}\n\n`;
     } else {
-      failedLines.push(`# ${r.name} -- failed (${r.error || `status=${r.status} ct=${r.contentType || ""}`})`);
-      failedLines.push(`#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${r.name}" group-title="${r.group}",${r.name}`);
-      failedLines.push(`# ${r.url}`);
-      failedLines.push("");
+      content += `# ${ch.name} -- unreachable\n`;
+      content += `#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${ch.name}" group-title="${ch.group}",${ch.name}\n`;
+      content += `# ${ch.url}\n\n`;
     }
   }
 
-  const body = [header, ...okLines, "# FAILED (commented) -- channels below were unreachable during generation", "", ...failedLines].join("\n");
-
-  await fs.writeFile(TMP_FILE, body, "utf8");
+  await fs.writeFile(TMP_FILE, content, "utf8");
   await fs.rename(TMP_FILE, OUT_FILE);
-
-  const okCount = results.filter(r => r.ok).length;
-  const failCount = results.length - okCount;
-  console.log(`Playlist written: ${OUT_FILE}  (ok: ${okCount}, failed: ${failCount})`);
-
-  if (failCount > 0) {
-    console.log("Some channels failed — they are included commented at the bottom of the playlist.");
-  }
+  console.log(`Missouri playlist generated: ${OUT_FILE}`);
 }
 
-main().catch((err) => {
-  console.error("Fatal:", err);
-  process.exitCode = 2;
+main().catch(err => {
+  console.error("Error generating playlist:", err);
+  process.exit(1);
 });
