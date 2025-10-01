@@ -2,38 +2,31 @@ name: Update Missouri IPTV Playlist
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # every 6 hours
-  workflow_dispatch:        # allow manual/manual trigger
+    - cron: "0 */12 * * *"  # every 12 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write  # allow push with GITHUB_TOKEN
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Download CVTV public M3U
-        run: curl -L "https://cvtv.cvalley.net/playlist.m3u8" -o cvtv.m3u8
-
-      - name: Download US master M3U
-        run: curl -s "https://iptv-org.github.io/iptv/countries/us.m3u" -o us.m3u
-
-      - name: Filter Missouri channels
+      - name: Run update script
         run: |
-          mkdir -p playlists
-          awk '/#EXTINF/ {p=$0} /,/{if(p ~ /broadcast_area="US-MO"/){print p;getline;print}}' us.m3u > playlists/missouri.m3u8
+          # Your playlist generation logic here
+          echo "#EXTM3U" > playlists/missouri.m3u8
 
-      - name: Merge CVTV + Missouri channels
-        run: |
-          cat cvtv.m3u8 >> playlists/missouri.m3u8
-
-      - name: Commit and push changes
+      - name: Commit & Push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add playlists/missouri.m3u8
-          git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || echo "No changes"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || echo "No changes to commit"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
