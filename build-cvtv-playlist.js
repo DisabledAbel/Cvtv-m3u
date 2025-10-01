@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * build-missouri-playlist.js
+ * build-cvtv-playlist.js
  *
- * Generates playlists/missouri.m3u8 with parallel URL validation for faster builds.
+ * Generates playlists/missouri.m3u8 with URL validation and caching.
  * Node 20+ required.
  */
 
@@ -12,9 +12,11 @@ import path from "path";
 const OUT_DIR = path.resolve("playlists");
 const OUT_FILE = path.join(OUT_DIR, "missouri.m3u8");
 const TMP_FILE = OUT_FILE + ".tmp";
-const FETCH_TIMEOUT_MS = 10000; // 10s
-const MAX_PARALLEL = 10; // Max simultaneous fetches
+const CACHE_FILE = path.join(OUT_DIR, ".url_cache.json");
+const FETCH_TIMEOUT_MS = 10000;
+const MAX_PARALLEL = 10;
 
+// Channels for Missouri playlist
 const channels = [
   { name: "KOMU CW", url: "https://cvtv.cvalley.net/hls/KOMUCW/KOMUCW.m3u8", group: "Local" },
   { name: "KCTV CBS", url: "https://cvtv.cvalley.net/hls/KCTVCBS/KCTVCBS.m3u8", group: "Local" },
@@ -58,7 +60,7 @@ function sanitizeTvgId(name) {
 async function checkUrl(url) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const timeout = setTimeout(() => controller.abort(), 10000);
     const res = await fetch(url, { method: "GET", headers: { Range: "bytes=0-1023" }, signal: controller.signal });
     clearTimeout(timeout);
     return res.ok;
@@ -67,12 +69,29 @@ async function checkUrl(url) {
   }
 }
 
-// Process channels in batches to limit simultaneous requests
-async function batchValidate(channels, batchSize) {
+async function loadCache() {
+  try {
+    const raw = await fs.readFile(CACHE_FILE, "utf8");
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+
+async function saveCache(cache) {
+  await fs.writeFile(CACHE_FILE, JSON.stringify(cache, null, 2), "utf8");
+}
+
+async function batchValidate(channels, cache, batchSize) {
   const results = [];
   for (let i = 0; i < channels.length; i += batchSize) {
     const batch = channels.slice(i, i + batchSize);
-    const promises = batch.map(async ch => ({ ch, ok: await checkUrl(ch.url) }));
+    const promises = batch.map(async ch => {
+      if (cache[ch.url]) return { ch, ok: true };
+      const ok = await checkUrl(ch.url);
+      if (ok) cache[ch.url] = true;
+      return { ch, ok };
+    });
     const batchResults = await Promise.allSettled(promises);
     batchResults.forEach(r => {
       if (r.status === "fulfilled") results.push(r.value);
@@ -84,8 +103,8 @@ async function batchValidate(channels, batchSize) {
 
 async function main() {
   await fs.mkdir(OUT_DIR, { recursive: true });
-
-  const validated = await batchValidate(channels, MAX_PARALLEL);
+  const cache = await loadCache();
+  const validated = await batchValidate(channels, cache, MAX_PARALLEL);
 
   let content = "#EXTM3U\n";
   content += `# Generated: ${new Date().toISOString()}\n\n`;
@@ -104,6 +123,7 @@ async function main() {
 
   await fs.writeFile(TMP_FILE, content, "utf8");
   await fs.rename(TMP_FILE, OUT_FILE);
+  await saveCache(cache);
   console.log(`Missouri playlist generated: ${OUT_FILE}`);
 }
 
