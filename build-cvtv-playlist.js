@@ -2,7 +2,7 @@
 /**
  * build-missouri-playlist.js
  *
- * Generates playlists/missouri.m3u8 with automatic URL validation.
+ * Generates playlists/missouri.m3u8 with parallel URL validation for faster builds.
  * Node 20+ required.
  */
 
@@ -13,6 +13,7 @@ const OUT_DIR = path.resolve("playlists");
 const OUT_FILE = path.join(OUT_DIR, "missouri.m3u8");
 const TMP_FILE = OUT_FILE + ".tmp";
 const FETCH_TIMEOUT_MS = 10000; // 10s
+const MAX_PARALLEL = 10; // Max simultaneous fetches
 
 const channels = [
   { name: "KOMU CW", url: "https://cvtv.cvalley.net/hls/KOMUCW/KOMUCW.m3u8", group: "Local" },
@@ -54,7 +55,6 @@ function sanitizeTvgId(name) {
   return name.toLowerCase().replace(/\s+/g, "_").replace(/[^\w-_.]/g, "");
 }
 
-// Minimal fetch to check if URL is reachable
 async function checkUrl(url) {
   try {
     const controller = new AbortController();
@@ -67,14 +67,30 @@ async function checkUrl(url) {
   }
 }
 
+// Process channels in batches to limit simultaneous requests
+async function batchValidate(channels, batchSize) {
+  const results = [];
+  for (let i = 0; i < channels.length; i += batchSize) {
+    const batch = channels.slice(i, i + batchSize);
+    const promises = batch.map(async ch => ({ ch, ok: await checkUrl(ch.url) }));
+    const batchResults = await Promise.allSettled(promises);
+    batchResults.forEach(r => {
+      if (r.status === "fulfilled") results.push(r.value);
+      else results.push({ ch: r.reason?.ch || null, ok: false });
+    });
+  }
+  return results;
+}
+
 async function main() {
   await fs.mkdir(OUT_DIR, { recursive: true });
+
+  const validated = await batchValidate(channels, MAX_PARALLEL);
 
   let content = "#EXTM3U\n";
   content += `# Generated: ${new Date().toISOString()}\n\n`;
 
-  for (const ch of channels) {
-    const ok = await checkUrl(ch.url);
+  for (const { ch, ok } of validated) {
     const tvgId = sanitizeTvgId(ch.name);
     if (ok) {
       content += `#EXTINF:-1 tvg-id="${tvgId}" tvg-name="${ch.name}" group-title="${ch.group}",${ch.name}\n`;
