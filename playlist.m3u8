@@ -1,49 +1,52 @@
 #EXTM3U
-#EXTINF:-1 group-title="CVTV",CNBC
-https://cvtv.cvalley.net/hls/CNBC/CNBC.m3u8
-#EXTINF:-1 group-title="CVTV",CNN
-https://cvtv.cvalley.net/hls/CNN/CNN.m3u8
-#EXTINF:-1 group-title="CVTV",ESPN
-https://cvtv.cvalley.net/hls/ESPN/ESPN.m3u8
-#EXTINF:-1 group-title="CVTV",ESPN2
-https://cvtv.cvalley.net/hls/ESPN2/ESPN2.m3u8
-#EXTINF:-1 group-title="CVTV",ESPNDEPORTES
-https://cvtv.cvalley.net/hls/ESPNDEPORTES/ESPNDEPORTES.m3u8
-#EXTINF:-1 group-title="CVTV",ESPNEWS
-https://cvtv.cvalley.net/hls/ESPNEWS/ESPNEWS.m3u8
-#EXTINF:-1 group-title="CVTV",ESPNU
-https://cvtv.cvalley.net/hls/ESPNU/ESPNU.m3u8
-#EXTINF:-1 group-title="CVTV",FOXNEWS
-https://cvtv.cvalley.net/hls/FOXNEWS/FOXNEWS.m3u8
-#EXTINF:-1 group-title="CVTV",FOXSPORTS1
-https://cvtv.cvalley.net/hls/FOXSPORTS1/FOXSPORTS1.m3u8
-#EXTINF:-1 group-title="CVTV",FOXSPORTS2
-https://cvtv.cvalley.net/hls/FOXSPORTS2/FOXSPORTS2.m3u8
-#EXTINF:-1 group-title="CVTV",KCPT
-https://cvtv.cvalley.net/hls/KCPT/KCPT.m3u8
-#EXTINF:-1 group-title="CVTV",KCTV5
-https://cvtv.cvalley.net/hls/KCTV5/KCTV5.m3u8
-#EXTINF:-1 group-title="CVTV",KMBCABC
-https://cvtv.cvalley.net/hls/KMBCABC/KMBCABC.m3u8
-#EXTINF:-1 group-title="CVTV",KSHB41
-https://cvtv.cvalley.net/hls/KSHB41/KSHB41.m3u8
-#EXTINF:-1 group-title="CVTV",KSHBD
-https://cvtv.cvalley.net/hls/KSHBD/KSHBD.m3u8
-#EXTINF:-1 group-title="CVTV",MLBNETWORK
-https://cvtv.cvalley.net/hls/MLBNETWORK/MLBNETWORK.m3u8
-#EXTINF:-1 group-title="CVTV",MSNBC
-https://cvtv.cvalley.net/hls/MSNBC/MSNBC.m3u8
-#EXTINF:-1 group-title="CVTV",NBATV
-https://cvtv.cvalley.net/hls/NBATV/NBATV.m3u8
-#EXTINF:-1 group-title="CVTV",NFLNETWORK
-https://cvtv.cvalley.net/hls/NFLNETWORK/NFLNETWORK.m3u8
-#EXTINF:-1 group-title="CVTV",NHLNETWORK
-https://cvtv.cvalley.net/hls/NHLNETWORK/NHLNETWORK.m3u8
-#EXTINF:-1 group-title="CVTV",TBS
-https://cvtv.cvalley.net/hls/TBS/TBS.m3u8
-#EXTINF:-1 group-title="CVTV",TNT
-https://cvtv.cvalley.net/hls/TNT/TNT.m3u8
-#EXTINF:-1 group-title="CVTV",USA
-https://cvtv.cvalley.net/hls/USA/USA.m3u8
-#EXTINF:-1 group-title="CVTV",WDAF
-https://cvtv.cvalley.net/hls/WDAF/WDAF.m3u8
+
+#EXTINF:-1 tvg-id="KOMU-CW.us" tvg-name="KOMU CW" group-title="Missouri",KOMU CW
+https://cvtv.cvalley.net:8088/hls/komucw.m3u8
+
+#EXTINF:-1 tvg-id="KCTV-CBS.us" tvg-name="KCTV CBS" group-title="Missouri",KCTV CBS
+https://cvtv.cvalley.net:8088/hls/kctvcbs.m3u8
+
+#EXTINF:-1 tvg-id="KMIZ-ABC.us" tvg-name="KMIZ ABC" group-title="Missouri",KMIZ ABC
+https://cvtv.cvalley.net:8088/hls/kmizabc.m3u8
+
+#EXTINF:-1 tvg-id="KQFX-FOX.us" tvg-name="KQFX FOX" group-title="Missouri",KQFX FOX
+https://cvtv.cvalley.net:8088/hls/kqfxfox.m3u8
+
+#EXTINF:-1 tvg-id="KOMU-NBC.us" tvg-name="KOMU NBC" group-title="Missouri",KOMU NBC
+https://cvtv.cvalley.net:8088/hls/komunbc.m3u8
+
+#EXTINF:-1 tvg-id="KRCG-CBS.us" tvg-name="KRCG CBS" group-title="Missouri",KRCG CBS
+https://cvtv.cvalley.net:8088/hls/krcgcbs.m3u8
+
+#EXTINF:-1 tvg-id="KZOU-MyTV.us" tvg-name="KZOU MyTV" group-title="Missouri",KZOU MyTV
+https://cvtv.cvalley.net:8088/hls/kzoumytv.m3u8
+
+#EXTINF:-1 tvg-id="KOMU-Weather.us" tvg-name="KOMU Weather" group-title="Missouri",KOMU Weather
+https://cvtv.cvalley.net:8088/hls/komuweather.m3u8
+
+#EXTINF:-1 tvg-id="KMIZ-FOX.us" tvg-name="KMIZ FOX 22" group-title="Missouri",KMIZ FOX 22
+https://cvtv.cvalley.net:8088/hls/kmizfox.m3u8
+
+#EXTINF:-1 tvg-id="KMIZ-MeTV.us" tvg-name="KMIZ MeTV" group-title="Missouri",KMIZ MeTV
+https://cvtv.cvalley.net:8088/hls/kmizmetv.m3u8
+
+#EXTINF:-1 tvg-id="KMIZ-MNT.us" tvg-name="KMIZ MNT" group-title="Missouri",KMIZ MNT
+https://cvtv.cvalley.net:8088/hls/kmizmnt.m3u8
+
+#EXTINF:-1 tvg-id="KRCG-MyTV.us" tvg-name="KRCG MyTV" group-title="Missouri",KRCG MyTV
+https://cvtv.cvalley.net:8088/hls/krcgmytv.m3u8
+
+#EXTINF:-1 tvg-id="KRCG-CW.us" tvg-name="KRCG CW" group-title="Missouri",KRCG CW
+https://cvtv.cvalley.net:8088/hls/krcgcw.m3u8
+
+#EXTINF:-1 tvg-id="KMIZ-Ion.us" tvg-name="KMIZ ION" group-title="Missouri",KMIZ ION
+https://cvtv.cvalley.net:8088/hls/kmizion.m3u8
+
+#EXTINF:-1 tvg-id="KOMU-NBC-8.3.us" tvg-name="KOMU NBC 8.3" group-title="Missouri",KOMU NBC 8.3
+https://cvtv.cvalley.net:8088/hls/komu83.m3u8
+
+#EXTINF:-1 tvg-id="KOMU-NBC-8.4.us" tvg-name="KOMU NBC 8.4" group-title="Missouri",KOMU NBC 8.4
+https://cvtv.cvalley.net:8088/hls/komu84.m3u8
+
+#EXTINF:-1 tvg-id="KOMU-NBC-8.5.us" tvg-name="KOMU NBC 8.5" group-title="Missouri",KOMU NBC 8.5
+https://cvtv.cvalley.net:8088/hls/komu85.m3u8
