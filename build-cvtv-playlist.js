@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-// helper to generate a readable timestamp
+// helper to generate timestamp
 function getTimestamp() {
   return new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" });
 }
@@ -26,7 +26,7 @@ http://example.com/stream2.m3u8
 
   console.log(`✅ Missouri playlist saved to ${outputPath}`);
 
-  // log preview for GitHub Actions
+  // log preview
   const preview = playlistContent.split("\n").slice(0, 6).join("\n");
   console.log("\n📺 Playlist preview:\n" + preview + "\n...");
 
