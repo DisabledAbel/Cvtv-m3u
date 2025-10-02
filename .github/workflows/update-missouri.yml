@@ -12,8 +12,10 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repo (full history)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -21,27 +23,76 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build playlist
-        run: node build-missouri-playlist.js
+      - name: Debug: show repo top files (for logs)
+        run: |
+          echo "cwd: $(pwd)"
+          ls -la
+          echo "------- searching for missouri build script names -------"
+          find . -maxdepth 4 -type f -iname "*missouri*" -print || true
+
+      - name: Locate & run build script
+        id: build
+        run: |
+          set -euo pipefail
+          candidates=(
+            "./scripts/build-missouri-playlist.js"
+            "./build-missouri-playlist.js"
+            "./tools/build-missouri-playlist.js"
+          )
+          BUILD_SCRIPT=""
+          for c in "${candidates[@]}"; do
+            if [ -f "$c" ]; then
+              BUILD_SCRIPT="$c"
+              break
+            fi
+          done
+
+          if [ -n "$BUILD_SCRIPT" ]; then
+            echo "Found build script: $BUILD_SCRIPT"
+            node "$BUILD_SCRIPT"
+            exit 0
+          fi
+
+          # fallback to npm script if present
+          if npm run | sed -n '1,200p' | grep -q "build:missouri"; then
+            echo "Found npm script 'build:missouri' — running it"
+            npm run build:missouri
+            exit 0
+          fi
+
+          echo "::error::No build script found. Searched: ${candidates[*]}"
+          echo "Repository top-level files:"
+          ls -la
+          find . -maxdepth 4 -type f -iname "*missouri*" -print || true
+          exit 1
 
       - name: Configure Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Pull latest changes
-        run: git pull origin master --rebase
+      - name: Pull latest changes (rebase)
+        run: |
+          # ensure we have the latest refs and rebase to avoid push rejections
+          git fetch origin
+          git checkout master
+          git pull --rebase origin master
 
-      - name: Commit changes
+      - name: Commit changes if any
         id: commit
         run: |
-          git add playlists/missouri.m3u8
-          if git commit -m "Auto-update Missouri IPTV playlist [skip ci]"; then
-            echo "committed=true" >> $GITHUB_OUTPUT
-          else
+          set -e
+          # Stage playlist outputs. Adjust path if your build writes elsewhere.
+          git add playlists || true
+          # If there are no staged changes, mark committed=false
+          if git diff --staged --quiet; then
+            echo "No staged changes to commit"
             echo "committed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || true
+            echo "committed=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Push changes
@@ -50,3 +101,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: master
+
+      - name: Finished (no push)
+        if: steps.commit.outputs.committed != 'true'
+        run: echo "No update necessary; job finished without pushing."
