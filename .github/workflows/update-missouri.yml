@@ -12,7 +12,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
+      - name: Checkout (full history)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -22,27 +22,70 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install
-        run: npm ci
+      - name: Install dependencies (ci if lockfile present, otherwise install)
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            echo "Lockfile found — running npm ci"
+            npm ci
+          else
+            echo "No lockfile — running npm install"
+            npm install
+          fi
+
+      - name: Debug: show repo top files (for logs)
+        run: |
+          echo "cwd: $(pwd)"
+          ls -la
+          echo "Searching for missouri build script..."
+          find . -maxdepth 4 -type f -iname "*missouri*" -print || true
 
       - name: Build
-        run: node ./scripts/build-missouri-playlist.js
+        run: |
+          if [ -f ./scripts/build-missouri-playlist.js ]; then
+            node ./scripts/build-missouri-playlist.js
+          elif [ -f ./build-missouri-playlist.js ]; then
+            node ./build-missouri-playlist.js
+          elif [ -f ./tools/build-missouri-playlist.js ]; then
+            node ./tools/build-missouri-playlist.js
+          elif npm run --silent | grep -q "build:missouri"; then
+            npm run build:missouri
+          else
+            echo "::error::No build script found. Update the workflow or commit the script."
+            exit 1
+          fi
 
       - name: Configure Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Commit and push if changed
+      - name: Pull latest changes (rebase)
         run: |
           git fetch origin
           git checkout master
           git pull --rebase origin master || true
+
+      - name: Commit changes if any
+        id: commit
+        run: |
+          set -e
+          # adjust path if your build writes elsewhere
           git add playlists || true
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No staged changes to commit"
+            echo "committed=false" >> $GITHUB_OUTPUT
           else
             git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || true
-            # best-effort push; may require permissions / token
-            git push origin master || true
+            echo "committed=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Push changes
+        if: steps.commit.outputs.committed == 'true'
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+
+      - name: Finished (no push)
+        if: steps.commit.outputs.committed != 'true'
+        run: echo "No update necessary; job finished without pushing."
