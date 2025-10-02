@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -29,41 +29,40 @@ jobs:
         run: |
           echo "cwd: $(pwd)"
           ls -la
-          echo "------- searching for missouri build script names -------"
+          echo "Searching for missouri build script names..."
           find . -maxdepth 4 -type f -iname "*missouri*" -print || true
 
       - name: Locate & run build script
         id: build
         run: |
           set -euo pipefail
-          candidates=(
-            "./scripts/build-missouri-playlist.js"
-            "./build-missouri-playlist.js"
-            "./tools/build-missouri-playlist.js"
-          )
-          BUILD_SCRIPT=""
-          for c in "${candidates[@]}"; do
-            if [ -f "$c" ]; then
-              BUILD_SCRIPT="$c"
-              break
-            fi
-          done
 
-          if [ -n "$BUILD_SCRIPT" ]; then
-            echo "Found build script: $BUILD_SCRIPT"
-            node "$BUILD_SCRIPT"
+          if [ -f ./scripts/build-missouri-playlist.js ]; then
+            echo "Found: ./scripts/build-missouri-playlist.js"
+            node ./scripts/build-missouri-playlist.js
             exit 0
           fi
 
-          # fallback to npm script if present
-          if npm run | sed -n '1,200p' | grep -q "build:missouri"; then
-            echo "Found npm script 'build:missouri' — running it"
+          if [ -f ./build-missouri-playlist.js ]; then
+            echo "Found: ./build-missouri-playlist.js"
+            node ./build-missouri-playlist.js
+            exit 0
+          fi
+
+          if [ -f ./tools/build-missouri-playlist.js ]; then
+            echo "Found: ./tools/build-missouri-playlist.js"
+            node ./tools/build-missouri-playlist.js
+            exit 0
+          fi
+
+          # fallback to npm script
+          if npm run --silent | grep -q "build:missouri"; then
+            echo "Found npm script 'build:missouri' - running it"
             npm run build:missouri
             exit 0
           fi
 
-          echo "::error::No build script found. Searched: ${candidates[*]}"
-          echo "Repository top-level files:"
+          echo "::error::No build script found. Searched common locations."
           ls -la
           find . -maxdepth 4 -type f -iname "*missouri*" -print || true
           exit 1
@@ -75,7 +74,6 @@ jobs:
 
       - name: Pull latest changes (rebase)
         run: |
-          # ensure we have the latest refs and rebase to avoid push rejections
           git fetch origin
           git checkout master
           git pull --rebase origin master
@@ -84,8 +82,9 @@ jobs:
         id: commit
         run: |
           set -e
-          # Stage playlist outputs. Adjust path if your build writes elsewhere.
+          # adjust path below if your build writes a different file
           git add playlists || true
+
           # If there are no staged changes, mark committed=false
           if git diff --staged --quiet; then
             echo "No staged changes to commit"
