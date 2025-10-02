@@ -2,7 +2,7 @@ name: Update Missouri IPTV Playlist
 
 on:
   schedule:
-    - cron: "0 */12 * * *" # every 12 hours
+    - cron: "0 */12 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,40 +12,41 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      - name: Ensure playlists folder exists
-        run: mkdir -p playlists
+      - name: Install dependencies
+        run: npm install
 
-      - name: Cache URL validation
-        uses: actions/cache@v3
-        id: url-cache
-        with:
-          path: playlists/.url_cache.json
-          key: url-cache-${{ runner.os }}-${{ hashFiles('build-cvtv-playlist.js') }}
-          restore-keys: |
-            url-cache-${{ runner.os }}-
+      - name: Build playlist
+        run: node build-missouri-playlist.js
 
-      - name: Install dependencies (if any)
-        run: npm ci || true
-
-      - name: Generate Missouri playlist
-        run: node build-cvtv-playlist.js
-
-      - name: Commit changes if playlist updated
+      - name: Configure Git
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add playlists/missouri.m3u8 playlists/.url_cache.json
-          git diff --cached --quiet || git commit -m "Auto-update Missouri IPTV playlist [skip ci]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Pull latest changes
+        run: git pull origin master --rebase
+
+      - name: Commit changes
+        id: commit
+        run: |
+          git add playlists/missouri.m3u8
+          if git commit -m "Auto-update Missouri IPTV playlist [skip ci]"; then
+            echo "committed=true" >> $GITHUB_OUTPUT
+          else
+            echo "committed=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Push changes
+        if: steps.commit.outputs.committed == 'true'
         uses: ad-m/github-push-action@v0.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
