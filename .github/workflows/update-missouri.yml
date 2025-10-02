@@ -12,7 +12,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout (full history)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -32,60 +32,23 @@ jobs:
             npm install
           fi
 
-      - name: Debug: show repo top files (for logs)
-        run: |
-          echo "cwd: $(pwd)"
-          ls -la
-          echo "Searching for missouri build script..."
-          find . -maxdepth 4 -type f -iname "*missouri*" -print || true
-
-      - name: Build
-        run: |
-          if [ -f ./scripts/build-missouri-playlist.js ]; then
-            node ./scripts/build-missouri-playlist.js
-          elif [ -f ./build-missouri-playlist.js ]; then
-            node ./build-missouri-playlist.js
-          elif [ -f ./tools/build-missouri-playlist.js ]; then
-            node ./tools/build-missouri-playlist.js
-          elif npm run --silent | grep -q "build:missouri"; then
-            npm run build:missouri
-          else
-            echo "::error::No build script found. Update the workflow or commit the script."
-            exit 1
-          fi
+      - name: Build playlist
+        run: node ./scripts/build-missouri-playlist.js
 
       - name: Configure Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Pull latest changes (rebase)
+      - name: Commit and push if changed (best-effort)
         run: |
           git fetch origin
           git checkout master
           git pull --rebase origin master || true
-
-      - name: Commit changes if any
-        id: commit
-        run: |
-          set -e
-          # adjust path if your build writes elsewhere
           git add playlists || true
           if git diff --staged --quiet; then
-            echo "No staged changes to commit"
-            echo "committed=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit"
           else
             git commit -m "Auto-update Missouri IPTV playlist [skip ci]" || true
-            echo "committed=true" >> $GITHUB_OUTPUT
+            git push origin master || true
           fi
-
-      - name: Push changes
-        if: steps.commit.outputs.committed == 'true'
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
-
-      - name: Finished (no push)
-        if: steps.commit.outputs.committed != 'true'
-        run: echo "No update necessary; job finished without pushing."
