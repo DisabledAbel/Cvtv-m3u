@@ -1,101 +1,49 @@
 #EXTM3U
-# Generated: 2025-10-01T16:00:00Z
-
-#EXTINF:-1 tvg-id="komu_cw" tvg-name="KOMU CW" group-title="Local",KOMU CW
-https://cvtv.cvalley.net/hls/KOMUCW/KOMUCW.m3u8
-
-#EXTINF:-1 tvg-id="kctv_cbs" tvg-name="KCTV CBS" group-title="Local",KCTV CBS
-https://cvtv.cvalley.net/hls/KCTVCBS/KCTVCBS.m3u8
-
-#EXTINF:-1 tvg-id="kmbc_abc" tvg-name="KMBC ABC" group-title="Local",KMBC ABC
+#EXTINF:-1 group-title="CVTV",CNBC
+https://cvtv.cvalley.net/hls/CNBC/CNBC.m3u8
+#EXTINF:-1 group-title="CVTV",CNN
+https://cvtv.cvalley.net/hls/CNN/CNN.m3u8
+#EXTINF:-1 group-title="CVTV",ESPN
+https://cvtv.cvalley.net/hls/ESPN/ESPN.m3u8
+#EXTINF:-1 group-title="CVTV",ESPN2
+https://cvtv.cvalley.net/hls/ESPN2/ESPN2.m3u8
+#EXTINF:-1 group-title="CVTV",ESPNDEPORTES
+https://cvtv.cvalley.net/hls/ESPNDEPORTES/ESPNDEPORTES.m3u8
+#EXTINF:-1 group-title="CVTV",ESPNEWS
+https://cvtv.cvalley.net/hls/ESPNEWS/ESPNEWS.m3u8
+#EXTINF:-1 group-title="CVTV",ESPNU
+https://cvtv.cvalley.net/hls/ESPNU/ESPNU.m3u8
+#EXTINF:-1 group-title="CVTV",FOXNEWS
+https://cvtv.cvalley.net/hls/FOXNEWS/FOXNEWS.m3u8
+#EXTINF:-1 group-title="CVTV",FOXSPORTS1
+https://cvtv.cvalley.net/hls/FOXSPORTS1/FOXSPORTS1.m3u8
+#EXTINF:-1 group-title="CVTV",FOXSPORTS2
+https://cvtv.cvalley.net/hls/FOXSPORTS2/FOXSPORTS2.m3u8
+#EXTINF:-1 group-title="CVTV",KCPT
+https://cvtv.cvalley.net/hls/KCPT/KCPT.m3u8
+#EXTINF:-1 group-title="CVTV",KCTV5
+https://cvtv.cvalley.net/hls/KCTV5/KCTV5.m3u8
+#EXTINF:-1 group-title="CVTV",KMBCABC
 https://cvtv.cvalley.net/hls/KMBCABC/KMBCABC.m3u8
-
-#EXTINF:-1 tvg-id="kmci_ind" tvg-name="KMCI IND" group-title="Local",KMCI IND
-https://cvtv.cvalley.net/hls/KMCIIND/KMCIIND.m3u8
-
-#EXTINF:-1 tvg-id="komu_nbc" tvg-name="KOMU NBC" group-title="Local",KOMU NBC
-https://cvtv.cvalley.net/hls/KOMUNBC/KOMUNBC.m3u8
-
-#EXTINF:-1 tvg-id="krcg_cbs" tvg-name="KRCG CBS" group-title="Local",KRCG CBS
-https://cvtv.cvalley.net/hls/KRCGCBS/KRCGCBS.m3u8
-
-#EXTINF:-1 tvg-id="kshb_nbc" tvg-name="KSHB NBC" group-title="Local",KSHB NBC
-https://cvtv.cvalley.net/hls/KSHBNBC/KSHBNBC.m3u8
-
-#EXTINF:-1 tvg-id="ktvo_abc" tvg-name="KTVO ABC" group-title="Local",KTVO ABC
-https://cvtv.cvalley.net/hls/KTVOABC/KTVOABC.m3u8
-
-#EXTINF:-1 tvg-id="kyou_fox" tvg-name="KYOU FOX" group-title="Local",KYOU FOX
-https://cvtv.cvalley.net/hls/KYOUFOX/KYOUFOX.m3u8
-
-#EXTINF:-1 tvg-id="ktvo_cbs" tvg-name="KTVO CBS" group-title="Local",KTVO CBS
-https://cvtv.cvalley.net/hls/KTVOCBS/KTVOCBS.m3u8
-
-#EXTINF:-1 tvg-id="kqfx_fox" tvg-name="KQFX FOX" group-title="Local",KQFX FOX
-https://cvtv.cvalley.net/hls/KQFXFOX/KQFXFOX.m3u8
-
-#EXTINF:-1 tvg-id="wdaf_fox" tvg-name="WDAF FOX" group-title="Local",WDAF FOX
-https://cvtv.cvalley.net/hls/WDAFFox/WDAFFox.m3u8
-
-#EXTINF:-1 tvg-id="knlj" tvg-name="KNLJ" group-title="Local",KNLJ
-https://cvtv.cvalley.net/hls/KNLJ/KNLJ.m3u8
-
-#EXTINF:-1 tvg-id="kcpt_pbs" tvg-name="KCPT PBS" group-title="Local",KCPT PBS
-https://cvtv.cvalley.net/hls/KCPTPBS/KCPTPBS.m3u8
-
-#EXTINF:-1 tvg-id="kcwe_ce" tvg-name="KCWE CE" group-title="Local",KCWE CE
-https://cvtv.cvalley.net/hls/KCWECW/KCWECW.m3u8
-
-#EXTINF:-1 tvg-id="kmbc_metv" tvg-name="KMBC MeTV" group-title="Subchannel",KMBC MeTV
-https://cvtv.cvalley.net/hls/KMBCMeTV/KMBCMeTV.m3u8
-
-#EXTINF:-1 tvg-id="kmci_bouncetv" tvg-name="KMCI Bounce TV" group-title="Subchannel",KMCI Bounce TV
-https://cvtv.cvalley.net/hls/KMCIBounceTV/KMCIBounceTV.m3u8
-
-#EXTINF:-1 tvg-id="kmiz_metv" tvg-name="KMIZ MeTV" group-title="Subchannel",KMIZ MeTV
-https://cvtv.cvalley.net/hls/KMIZMeTV/KMIZMeTV.m3u8
-
-#EXTINF:-1 tvg-id="kmso_pbs" tvg-name="KMSO PBS" group-title="Local",KMSO PBS
-https://cvtv.cvalley.net/hls/KMOSPBS/KMOSPBS.m3u8
-
-#EXTINF:-1 tvg-id="kpxe_ion" tvg-name="KPXE ION" group-title="Subchannel",KPXE ION
-https://cvtv.cvalley.net/hls/KPXEION/KPXEION.m3u8
-
-#EXTINF:-1 tvg-id="krcg_comet" tvg-name="KRCG Comet" group-title="Subchannel",KRCG Comet
-https://cvtv.cvalley.net/hls/KRCGComet/KRCGComet.m3u8
-
-#EXTINF:-1 tvg-id="krcg_charge" tvg-name="KRCG CHARGE" group-title="Subchannel",KRCG CHARGE
-https://cvtv.cvalley.net/hls/KRCGCHARGE/KRCGCHARGE.m3u8
-
-#EXTINF:-1 tvg-id="krcg_tbd" tvg-name="KRCG TBD" group-title="Subchannel",KRCG TBD
-https://cvtv.cvalley.net/hls/KRCGTBD/KRCGTBD.m3u8
-
-#EXTINF:-1 tvg-id="kshb_cozi" tvg-name="KSHB COZI" group-title="Subchannel",KSHB COZI
-https://cvtv.cvalley.net/hls/KSHBCozi/KSHBCozi.m3u8
-
-#EXTINF:-1 tvg-id="kshb_laff" tvg-name="KSHB LAFF" group-title="Subchannel",KSHB LAFF
-https://cvtv.cvalley.net/hls/KSHBLaff/KSHBLaff.m3u8
-
-#EXTINF:-1 tvg-id="ksmo_ind" tvg-name="KSMO IND" group-title="Local",KSMO IND
-https://cvtv.cvalley.net/hls/KSMOIND/KSMOIND.m3u8
-
-#EXTINF:-1 tvg-id="ktvo_comet" tvg-name="KTVO Comet" group-title="Subchannel",KTVO Comet
-https://cvtv.cvalley.net/hls/KTVOComet/KTVOComet.m3u8
-
-#EXTINF:-1 tvg-id="kyou_nbc" tvg-name="KYOU NBC" group-title="Local",KYOU NBC
-https://cvtv.cvalley.net/hls/KYOUNBC/KYOUNBC.m3u8
-
-#EXTINF:-1 tvg-id="kyou_nbc2" tvg-name="KYOU NBC2" group-title="Local",KYOU NBC2
-https://cvtv.cvalley.net/hls/KYOUNBC2/KYOUNBC2.m3u8
-
-#EXTINF:-1 tvg-id="kyou_grit" tvg-name="KYOU GRIT" group-title="Subchannel",KYOU GRIT
-https://cvtv.cvalley.net/hls/KYOUGrit/KYOUGrit.m3u8
-
-#EXTINF:-1 tvg-id="kyou_dt4" tvg-name="KYOU DT4" group-title="Subchannel",KYOU DT4
-https://cvtv.cvalley.net/hls/KYOUDT4/KYOUDT4.m3u8
-
-#EXTINF:-1 tvg-id="kyou_myzou" tvg-name="KYOU MYZOU" group-title="Subchannel",KYOU MYZOU
-https://cvtv.cvalley.net/hls/KZOUMYZOU/KZOUMYZOU.m3u8
-
-#EXTINF:-1 tvg-id="wdaf_antenna" tvg-name="WDAF Antenna" group-title="Subchannel",WDAF Antenna
-https://cvtv.cvalley.net/hls/WDAFAntenna/WDAFAntenna.m3u8
+#EXTINF:-1 group-title="CVTV",KSHB41
+https://cvtv.cvalley.net/hls/KSHB41/KSHB41.m3u8
+#EXTINF:-1 group-title="CVTV",KSHBD
+https://cvtv.cvalley.net/hls/KSHBD/KSHBD.m3u8
+#EXTINF:-1 group-title="CVTV",MLBNETWORK
+https://cvtv.cvalley.net/hls/MLBNETWORK/MLBNETWORK.m3u8
+#EXTINF:-1 group-title="CVTV",MSNBC
+https://cvtv.cvalley.net/hls/MSNBC/MSNBC.m3u8
+#EXTINF:-1 group-title="CVTV",NBATV
+https://cvtv.cvalley.net/hls/NBATV/NBATV.m3u8
+#EXTINF:-1 group-title="CVTV",NFLNETWORK
+https://cvtv.cvalley.net/hls/NFLNETWORK/NFLNETWORK.m3u8
+#EXTINF:-1 group-title="CVTV",NHLNETWORK
+https://cvtv.cvalley.net/hls/NHLNETWORK/NHLNETWORK.m3u8
+#EXTINF:-1 group-title="CVTV",TBS
+https://cvtv.cvalley.net/hls/TBS/TBS.m3u8
+#EXTINF:-1 group-title="CVTV",TNT
+https://cvtv.cvalley.net/hls/TNT/TNT.m3u8
+#EXTINF:-1 group-title="CVTV",USA
+https://cvtv.cvalley.net/hls/USA/USA.m3u8
+#EXTINF:-1 group-title="CVTV",WDAF
+https://cvtv.cvalley.net/hls/WDAF/WDAF.m3u8
