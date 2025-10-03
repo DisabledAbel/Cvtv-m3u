@@ -1,10 +1,15 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // helper to generate timestamp
 function getTimestamp() {
   return new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" });
 }
+
+// recreate __filename / __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 try {
   let playlistContent = `#EXTM3U
@@ -28,5 +33,6 @@ http://example.com/stream2.m3u8
 
 } catch (err) {
   console.error("❌ Failed to build Missouri playlist:", err.message);
+  // ensure non-zero exit code on failure
   process.exit(1);
 }
