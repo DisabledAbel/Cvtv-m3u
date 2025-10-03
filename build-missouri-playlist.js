@@ -33,6 +33,5 @@ http://example.com/stream2.m3u8
 
 } catch (err) {
   console.error("❌ Failed to build Missouri playlist:", err.message);
-  // ensure non-zero exit code on failure
   process.exit(1);
 }
