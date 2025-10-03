@@ -1,1 +1,6 @@
 #EXTM3U
+# Updated: 10/3/2025, 5:32:28 AM
+#EXTINF:-1, Example Channel 1
+http://example.com/stream1.m3u8
+#EXTINF:-1, Example Channel 2
+http://example.com/stream2.m3u8
