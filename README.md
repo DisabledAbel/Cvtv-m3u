@@ -38,5 +38,5 @@ New channels are discovered automatically
 - Redistribution for commercial purposes is prohibited.
 - The author is not responsible for misuse
 
-Community:
-Discord: https://discord.gg/jx6ZHSuK56
+# Status 
+[![CVTV Scraper + Pages](https://github.com/DisabledAbel/Cvtv-m3u/actions/workflows/scraper.yml/badge.svg)](https://github.com/DisabledAbel/Cvtv-m3u/actions/workflows/scraper.yml)
