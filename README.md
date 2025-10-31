@@ -31,12 +31,14 @@ playlist.m3u8 must stay in the repo root for the raw URL to work
 The URL never changes
 New channels are discovered automatically
 
-# Disclaimer 
-- CVTV provides public M3U playlists; this repository uses only publicly available streams.
-- All content belongs to CVTV.
-- Intended for personal and educational use only.
-- Redistribution for commercial purposes is prohibited.
-- The author is not responsible for misuse
+## ⚠️ Disclaimer
+
+- Only includes streams officially published by CVTV and publicly available.  
+- Does NOT include paid, subscription, or copyrighted-only channels.  
+- Intended for personal and educational use only.  
+- Redistribution for commercial purposes is prohibited.  
+- The author is not responsible for misuse.  
+- Source/publication link: [CVTV Public Streams](https://github.com/iptv-org/iptv/issues/17443
 
 # Status 
 [![CVTV Scraper + Pages](https://github.com/DisabledAbel/Cvtv-m3u/actions/workflows/scraper.yml/badge.svg)](https://github.com/DisabledAbel/Cvtv-m3u/actions/workflows/scraper.yml)
